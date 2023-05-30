@@ -1,5 +1,8 @@
 import React,{useState,useEffect} from 'react';
-import { View } from 'react-native'
+import { View,Text, FlatList, Image, TouchableOpacity} from 'react-native'
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { NavigationContainer } from '@react-navigation/native';
+import { useNavigation,useRoute } from '@react-navigation/native';
 
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import {
@@ -7,13 +10,17 @@ import {
   getCurrentPositionAsync,
   LocationObject,
   watchPositionAsync,
-  LocationAccuracy
+  LocationAccuracy,
 } from 'expo-location'
-import MapViewDirections from 'react-native-maps-directions'
-import {locations} from './src/constants/geo-locations'
+import MapViewDirections, {MapViewDirectionsProps} from 'react-native-maps-directions'
+import {arrayLocation, locations} from './src/constants/geo-locations'
 import {styles} from './style'
-export default function App() {
+interface RouteParams {
+  latitude: MapViewDirectionsProps | any;
+  longitude: MapViewDirectionsProps | any;
+}
 
+function Map({navigation}) {
   const [location, setLocation] = useState<LocationObject | null>(null)
 
   const requestLocationPermission = async () => {
@@ -39,8 +46,10 @@ export default function App() {
     }
     )
   }, [])
-  
-  return (
+
+  const route = useRoute();
+  const {latitude,longitude} = route.params as RouteParams;
+   return (
     <View style={styles.container}>
       {
         location && 
@@ -64,75 +73,141 @@ export default function App() {
 
             <Marker
                 coordinate={{
-                  latitude: locations.martimelo1.lat,
-                  longitude: locations.martimelo1.long,
+                  latitude: latitude,
+                  longitude: longitude,
                 }}
                 image={require('./src/assets/destino.png')}
 
             />
-
-            <Marker
-                coordinate={{
-                  latitude: locations.martimelo2.lat,
-                  longitude: locations.martimelo2.long,
-                }}
-                image={require('./src/assets/destino.png')}
-
-            />
-
-            <Marker
-                coordinate={{
-                  latitude: locations.martimelo3.lat,
-                  longitude: locations.martimelo3.long,
-                }}
-                image={require('./src/assets/destino.png')}
-
-            />
-
-          <Marker
-                coordinate={{
-                  latitude: locations.vivo1.lat,
-                  longitude: locations.vivo1.long,
-                }}
-                image={require('./src/assets/destino.png')}
-
-              
-            />
-            <Marker
-                coordinate={{
-                  latitude: locations.vivo2.lat,
-                  longitude: locations.vivo2.long,
-                }}
-                image={require('./src/assets/destino.png')}
-
-            />
-
-          <Marker
-                coordinate={{
-                  latitude: locations.somAcessorios.lat,
-                  longitude: locations.somAcessorios.long,
-                }}
-                image={require('./src/assets/destino.png')}
-
-            />
-
+    
              <MapViewDirections
               origin={{
                 latitude: location.coords.latitude,
                 longitude: location.coords.longitude,
               }}
               destination={{
-                latitude: locations.vivo2.lat,
-                longitude: locations.vivo2.long,
+                latitude: latitude,
+                longitude: longitude,
               }}
               apikey='AIzaSyAsTyn8KkzxZZu7sgcN7a1rsIxQFF60oh8'
               strokeWidth={3}
               strokeColor='#04844C'
             />
+            
           </MapView>
-
       }
     </View>
+   )
+}
+
+
+function HomeScreen({ navigation }) {
+  return (
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }}>
+
+  <FlatList
+        data={arrayLocation}
+        renderItem={({ item }) => <View
+        style={{
+          backgroundColor: 'white',  
+          borderRadius: 8,  
+          paddingVertical: 45,  
+          paddingHorizontal: 25,  
+          width: '100%',  
+          marginVertical: 10,
+          shadowColor: '#52006A',  
+          elevation: 20,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+          <View style={{backgroundColor:'#FCCC1C', width: 80, height: 80, borderRadius: 20, marginRight: 20, paddingBottom: 40}}>
+             <Image 
+              source={require('./src/assets/icon.png')}
+             />
+          </View>
+        
+        <View>
+            <View style={{alignItems:'center', flexDirection:'row', padding:5}}>
+              <Image 
+                source={require('./src/assets/pointer.png')}
+                style={{marginRight: 15}}
+              />
+                <Text 
+                style={{
+                  fontWeight: '300',
+                  fontSize:16
+                }}
+                >Distância: 3 Km</Text>
+            </View>
+            <View style={{alignItems:'center', flexDirection:'row', padding:5}}>
+              <Image 
+                source={require('./src/assets/clock.png')}
+                style={{marginRight: 15}}
+
+              />
+              <Text
+                style={{
+                  fontWeight: '300',
+                  fontSize:16
+                }}
+              >Tempo da viagem: 7 Min</Text>
+            </View>
+        </View>
+        </View>
+        <TouchableOpacity
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'transparent',
+            borderColor:'#FCCC1C',
+            borderWidth: 2,
+            padding: 5,
+            marginTop: 30,
+            borderRadius: 30,
+            height:40,
+            width:96
+          }}
+          onPress={() => {
+            navigation.navigate('Mapa', {
+              latitude: item.lat,
+              longitude: item.long
+            })
+
+          }}
+      >
+        <Text
+          style={{
+            fontWeight: '400',
+            fontSize:16
+          }}
+        
+        >Ver rota</Text>
+      </TouchableOpacity>
+      </View>}
+      />
+      
+     
+    </View>
+  );
+}
+
+
+const Stack = createNativeStackNavigator();
+
+
+export default function App() {
+
+ 
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Mapa" component={Map} />
+
+      </Stack.Navigator>
+    </NavigationContainer>
   )
 }
 
