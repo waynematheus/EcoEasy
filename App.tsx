@@ -1,8 +1,8 @@
 import React,{useState,useEffect} from 'react';
-import { View,Text, FlatList, Image, TouchableOpacity} from 'react-native'
+import { View,Text, FlatList, Image, TouchableOpacity, ScrollView} from 'react-native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
-import { useNavigation,useRoute } from '@react-navigation/native';
+import { useRoute } from '@react-navigation/native';
 
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
 import {
@@ -13,7 +13,7 @@ import {
   LocationAccuracy,
 } from 'expo-location'
 import MapViewDirections, {MapViewDirectionsProps} from 'react-native-maps-directions'
-import {arrayLocation, locations} from './src/constants/geo-locations'
+import {arrayLocation } from './src/constants/geo-locations'
 import {styles} from './style'
 interface RouteParams {
   latitude: MapViewDirectionsProps | any;
@@ -104,7 +104,38 @@ function Map({navigation}) {
 function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', padding: 10 }}>
-
+    <View style={{
+      flexDirection:'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      width: '100%',
+      padding: 40
+    }}>
+      <TouchableOpacity>
+        <Image 
+          source={require('./src/assets/hamburger.png')}
+        />
+      </TouchableOpacity>
+        <Text style={{
+          color: '#04844C',
+          fontSize: 28,
+          fontWeight: '400',
+          marginRight: 45,
+        }}>EcoEase
+        </Text>
+    </View>
+    <View style={{
+      width: '100%',
+      paddingHorizontal:25
+    }}>
+      <Text style={{
+        color: '#1D1D1D',
+        fontSize: 20,
+        fontWeight: '300',
+      }}>
+        EcoPontos Próximos
+      </Text>
+    </View>
   <FlatList
         data={arrayLocation}
         renderItem={({ item }) => <View
@@ -203,8 +234,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Mapa" component={Map} />
+        <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Mapa" component={Map} options={{ headerShown: false }}/>
 
       </Stack.Navigator>
     </NavigationContainer>

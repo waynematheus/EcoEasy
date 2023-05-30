@@ -9,7 +9,7 @@
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#04844C"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -19,17 +19,23 @@
     },
     "android": {
       "config": {
-        "googleMaps":{
+        "googleMaps": {
           "apiKey": "AIzaSyAsTyn8KkzxZZu7sgcN7a1rsIxQFF60oh8"
         }
       },
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      }
+        "backgroundColor": "#04844C"
+      },
+      "package": "com.pedrobastosgui.ecomaps"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "80b1181a-1f9a-42ae-9b8d-c7b2dd260bc6"
+      }
     }
   }
 }
